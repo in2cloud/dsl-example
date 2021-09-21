@@ -1,0 +1,18 @@
+{
+  "flows": [
+    {
+      "id": "simple-greeting",
+      "initial": "start",
+      "blocks": {
+        "start": {
+          "type": "TPlay",
+          "message": "'Welcome to simple greeting demo flow'",
+          "next": "disconnect"
+        },
+        "disconnect": {
+          "type": "TDisconnect"
+        }
+      }
+    }
+  ]
+}
