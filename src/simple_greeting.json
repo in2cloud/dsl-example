@@ -6,7 +6,7 @@
       "blocks": {
         "start": {
           "type": "TPlay",
-          "message": "'Welcome to simple greeting demo flow'",
+          "message": "Welcome to simple greeting demo flow",
           "next": "disconnect"
         },
         "disconnect": {
