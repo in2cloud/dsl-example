@@ -1,0 +1,29 @@
+{
+  "flows": [
+    {
+      "id": "simple_menu",
+      "initial": "start",
+      "blocks": {
+        "start": {
+          "type": "TMenu",
+          "message": "Press 1 to repeat, 2 to disconnect",
+          "options": {
+            "1": "start",
+            "2": "disconnect"
+          },
+          "nomatch": "start",
+          "timeout": "disconnect",
+          "error": "error"
+        },
+        "error": {
+          "type": "TPlay",
+          "message": "Oh no. Unexpected error. Please call later",
+          "next": "disconnect"
+        },
+        "disconnect": {
+          "type": "TDisconnect"
+        }
+      }
+    }
+  ]
+}

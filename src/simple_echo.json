@@ -1,0 +1,31 @@
+{
+  "flows": [
+    {
+      "id": "simple_echo",
+      "initial": "start",
+      "blocks": {
+        "start": {
+          "type": "TPrompt",
+          "message": "Please enter any number, then press #",
+          "destination": "number",
+          "next": "echo",
+          "timeout": "disconnect",
+          "error": "error"
+        },
+        "echo": {
+          "type": "TPlay",
+          "message": "You have entered ${number}",
+          "next": "disconnect"
+        },
+        "error": {
+          "type": "TPlay",
+          "message": "Oh no. Unexpected error. Please call later",
+          "next": "disconnect"
+        },
+        "disconnect": {
+          "type": "TDisconnect"
+        }
+      }
+    }
+  ]
+}

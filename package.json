@@ -5,7 +5,9 @@
   "devDependencies": {
     "@types/jest": "^27.0.2",
     "jest": "^27.3.1",
-    "ts-jest": "^27.0.7",
-    "@in2cloud/in2cloud-cli": "^0.0.45"
+    "ts-jest": "^27.0.7"
+  },
+  "dependencies": {
+    "@in2cloud/in2cloud-cli": "^0.0.46"
   }
 }
