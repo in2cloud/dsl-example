@@ -1,0 +1,39 @@
+{
+  "flows": [
+    {
+      "id": "simple_survey",
+      "initial": "start",
+      "parameters": ["message"],
+      "exits": ["success", "error"],
+      "blocks": {
+        "start": {
+          "type": "TPlay",
+          "message": "@message",
+          "next": "prompt_score"
+        },
+        "prompt_score": {
+          "type": "TMenu",
+          "message": "Use numbers 1 to 5 to provide score.",
+          "options": {
+            "1": "returnSuccess",
+            "2": "returnSuccess",
+            "3": "returnSuccess",
+            "4": "returnSuccess",
+            "5": "returnSuccess"
+          },
+          "timeout": "start",
+          "nomatch": "start",
+          "error": "returnError"
+        },
+        "returnSuccess": {
+          "type": "TReturn",
+          "to": "success"
+        },
+        "returnError": {
+          "type": "TReturn",
+          "to": "error"
+        }
+      }
+    }
+  ]
+}
