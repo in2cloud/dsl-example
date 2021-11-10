@@ -16,7 +16,7 @@ How to configure AWS Connect using in2cloud DSL
 4. This should create 'simple-greeting' flow in your AWS Connect instance.
 
 ### DEMO API KEY
-For testing purposes you can use this free API key: **e5XFbafEPg39DOBXXaJuj57MhLhpiYEt88IZ80VT** 
+For testing purposes you can use this free API key: **XGRVeL3LHi2yhuu9eSLMY1NnfxKfiAEX7YMnxQgw** 
 
 This key is for demo purposes only, and should not be used for production purposes,
 as it can be expired/disabled/revoked at any time without further notice
