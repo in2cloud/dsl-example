@@ -46,7 +46,81 @@ For example:
 The example above should successfully deploy `simple-greeting` flow in your AWS Connect instance
 
 ### Tutorial 1: Greeting the user
-TODO
+In this example we are going to create a play a greeting to the user.  
+1. Create a new file named `simple_greeting.json`
+2. To start, we must create the top level `flows` block:
+```json
+{
+  "flows": [
+    {
+      "id": "simple_greeting"
+    }
+  ]
+}
+```
+The code above simply creates the first flow object with the id of `simple_greeting`. But it doesn't do anything yet.
+3. Add the blocks that contain the logic:
+```json
+{
+  "flows": [
+    {
+      "id": "simple_greeting",
+      "initial": "start",
+      "blocks": {
+        "start": {
+          "type": "TPlay"
+        },
+        "disconnect": {
+          "type": "TDisconnect"
+        }
+      }
+    }
+  ]
+}
+```
+In the code above, we have defined two blocks:  `start` and `disconnect`.
+
+To discover the purpose and syntax of these blocks, refer to the documentation: [in2cloud DSL docs](https://github.com/in2cloud/dsl-doc/blob/master/documentation/README.md)
+
+[TPlay:](https://github.com/in2cloud/dsl-doc/blob/master/documentation/tdslroot-definitions-tplay.md) Plays a message to the caller  
+[TDisconnect:](https://github.com/in2cloud/dsl-doc/blob/master/documentation/tdslroot-definitions-tdisconnect.md) End the call via disconnection
+
+The documentation lists two additional attributes required for the `start` block:
+
+- message: This string is the text that will be read to the user
+- next: The logical name of the next block to execute. In this example we want to terminate the call after the greeting
+
+The completed flow is now shown below:
+
+```json
+{
+  "flows": [
+    {
+      "id": "simple_greeting",
+      "initial": "start",
+      "blocks": {
+        "start": {
+          "type": "TPlay",
+          "message": "Welcome to simple greeting demo flow",
+          "next": "disconnect"
+        },
+        "disconnect": {
+          "type": "TDisconnect"
+        }
+      }
+    }
+  ]
+}
+```
+
+You should now test the flow in your connect instance:
+
+>in2cloud-cli deploy src/simple_greeting.json --key [DEMO_API_KEY] --flow simple_greeting --region ap-southeast-2 --instance XXXXX-1111-2222-3333-XXXXXXX
+
+Once the example has successfully been deployed, call your instance to confirm the message is read back to you!
+
+TODO: add image of deployed flow in connect
+
 
 ### Tutorial 2: Menus and selections
 **Note for Taras:** is `simple_menu` and `simple_survey` demonstrating the same thing?
