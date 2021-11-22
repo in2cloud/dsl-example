@@ -90,7 +90,8 @@ The documentation lists two additional attributes required for the `start` block
 - message: This string is the text that will be read to the user
 - next: The logical name of the next block to execute. In this example we want to terminate the call after the greeting
 
-The completed flow is now shown below:
+4. Add the required fields to your flow  
+The completed flow is shown below:
 
 ```json
 {
@@ -113,14 +114,22 @@ The completed flow is now shown below:
 }
 ```
 
-You should now test the flow in your connect instance:
+Your flow is now complete.
 
+5. Deploy to AWS Connect via CLI
+
+To test your flow in a real environment, you need to deploy it to AWS Connect. You can use the in2cloud DSL to do that via the following command:
 >in2cloud-cli deploy src/simple_greeting.json --key [DEMO_API_KEY] --flow simple_greeting --region ap-southeast-2 --instance XXXXX-1111-2222-3333-XXXXXXX
 
+6. Review your flow in AWS  
+Log on to your AWS Connect instance. Navigate to contact flows, and find the new flow named `simple-greeting`. 
+Click on the flow and it will show you the design in the browser:
+![Image of connect flow](https://photos.smugmug.com/photos/i-pb2qvg5/0/def5c3c1/XL/i-pb2qvg5-XL.png)
+
+You can review the functions of each block and how it corresponds to your DSL code.
+
+7. Call your flow
 Once the example has successfully been deployed, call your instance to confirm the message is read back to you!
-
-TODO: add image of deployed flow in connect
-
 
 ### Tutorial 2: Menus and selections
 **Note for Taras:** is `simple_menu` and `simple_survey` demonstrating the same thing?
