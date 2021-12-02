@@ -46,7 +46,10 @@ For example:
 The example above should successfully deploy `simple-greeting` flow in your AWS Connect instance
 
 ### Tutorial 1: Greeting the user
-In this example we are going to create a play a greeting to the user.  
+In this example we are going to create a flow that will play a greeting to the user.  
+
+**Note:** A completed example of this tutorial is available in: src/simple_greeting.json
+
 1. Create a new file named `simple_greeting.json`
 2. To start, we must create the top level `flows` block:
 ```json
@@ -132,19 +135,271 @@ You can review the functions of each block and how it corresponds to your DSL co
 Once the example has successfully been deployed, call your instance to confirm the message is read back to you!
 
 ### Tutorial 2: Menus and selections
-**Note for Taras:** is `simple_menu` and `simple_survey` demonstrating the same thing?
-TODO
+In this example we are going to create a flow that will demonstrate how to construct a menu and receive input from 
+the user.
+
+**Note:** A completed example of this tutorial is available in: src/simple_menu.json
+
+1. Create a new file named `simple_menu.json`
+2. As a first step, create the basic flow structure:
+```json
+{
+ "flows": [
+  {
+   "id": "simple_menu",
+   "initial": "disconnect",
+   "blocks": {
+    "disconnect": {
+     "type": "TDisconnect"
+    }
+   }
+  }
+ ]
+}
+```
+The code above simply creates the first flow object with the id of `simple_menu`. When executed it will take the caller
+straight to the disconnection stage.
+
+3. Now add the menu block:
+```json
+{
+  "flows": [
+    {
+      "id": "simple_menu",
+      "initial": "start",
+      "blocks": {
+        "start": {
+          "type": "TMenu",
+          "message": "Press 1 to repeat, 2 to disconnect",
+          "options": {
+            "1": "start",
+            "2": "disconnect"
+          },
+          "nomatch": "start",
+          "timeout": "disconnect",
+          "error": "error"
+        },
+        "error": {
+          "type": "TPlay",
+          "message": "Oh no. Unexpected error. Please call later",
+          "next": "disconnect"
+        },
+        "disconnect": {
+          "type": "TDisconnect"
+        }
+      }
+    }
+  ]
+}
+```
+The menu item in the flow above is named `start`. It has 2 options defined that correspond to the user input. 
+The options block lets you assign the next execution block that corresponds to the user input.  
+While the user enters `1`, they will be prompted again for their input. As soon as they select `2`, they will be 
+disconnected.
+
+For full details of the TMenu block, please refer to the [in2cloud DSL docs](https://github.com/in2cloud/dsl-doc/blob/master/documentation/README.md):  
+[TMenu:](https://github.com/in2cloud/dsl-doc/blob/master/documentation/tdslroot-definitions-tmenu.md) Prompt user to make a choice  
+
+5. Deploy to AWS Connect via CLI
+
+To test your flow in a real environment, you need to deploy it to AWS Connect. You can use the in2cloud DSL to do that via the following command:
+>in2cloud-cli deploy src/simple_menu.json --key [DEMO_API_KEY] --flow simple_menu --region ap-southeast-2 --instance XXXXX-1111-2222-3333-XXXXXXX
+
+6. Review your flow in AWS  
+   Log on to your AWS Connect instance. Navigate to contact flows, and find the new flow named `simple-menu`.  
+   Click on the flow and it will show you the design in the browser:  
+   ![Image of connect flow](https://photos.smugmug.com/photos/i-44pzP7C/0/7ddf92cd/O/i-44pzP7C.png)
+
+
+You can review the functions of each block and how it corresponds to your DSL code.
+
+7. Call your flow  
+   Once the example has successfully been deployed, call your instance to test the contact flow!
+
 
 ### Tutorial 3: Echo user choice
+In this example we are going to create a flow that will receive input from a user, and play it back to them.
+
+**Note:** A completed example of this tutorial is available in: src/simple_echo.json
+
+1. Create a new file named `simple_echo.json`
+2. Add the following blocks:
+```json
+{
+ "flows": [
+  {
+   "id": "simple_echo",
+   "initial": "start",
+   "blocks": {
+    "start": {
+     "type": "TPrompt",
+     "message": "Please enter any number, then press #",
+     "destination": "number",
+     "next": "echo",
+     "timeout": "disconnect",
+     "error": "error"
+    },
+    "echo": {
+     "type": "TPlay",
+     "message": "You have entered ${number}",
+     "next": "disconnect"
+    },
+    "error": {
+     "type": "TPlay",
+     "message": "Oh no. Unexpected error. Please call later",
+     "next": "disconnect"
+    },
+    "disconnect": {
+     "type": "TDisconnect"
+    }
+   }
+  }
+ ]
+}
+```
+In the code above, there is a new block type: [TPrompt](https://github.com/in2cloud/dsl-doc/blob/master/documentation/tdslroot-definitions-tprompt.md)  
+This block will play a message to the user and wait for input. The input will be stored in the variable name specified in
+`destination`. In this example, the variable is named `number`.  
+After the input has been stored, the flow will move on to the next block named `echo`, which plays the message back to 
+the user. Note that the message contains the `number` variable that was saved earlier.  
+After the message is played, the flow will disconnect the user.
+
+3. Deploy to AWS Connect via CLI
+
+To test your flow in a real environment, you need to deploy it to AWS Connect. You can use the in2cloud DSL to do that via the following command:
+>in2cloud-cli deploy src/simple_echo.json --key [DEMO_API_KEY] --flow simple_echo --region ap-southeast-2 --instance XXXXX-1111-2222-3333-XXXXXXX
+
+4. Review your flow in AWS  
+   Log on to your AWS Connect instance. Navigate to contact flows, and find the new flow named `simple-menu`.  
+   Click on the flow and it will show you the design in the browser:  
+   ![Image of connect flow](https://photos.smugmug.com/photos/i-NnzzQPN/0/cac3cdc7/O/i-NnzzQPN.png)
+
+
+You can review the functions of each block and how it corresponds to your DSL code.
+
+5. Call your flow  
+   Once the example has successfully been deployed, call your instance to test the contact flow!
+
+### Tutorial 4: Reusing blocks with subflows
+In this example we are going to demonstrate how to create a flow that can be called by another flow. This allows you
+to create reusable blocks of logic that can be reused.
+
+**Note:** A completed example of this tutorial is available in: 
+- src/simple_survey.json
+- src/simple_subflow_call.json
+
+1. Create a new file named `simple_survey.json`
+2. Add the following content:
+```json
+{
+ "flows": [
+  {
+   "id": "simple_survey",
+   "initial": "start",
+   "parameters": ["message"],
+   "exits": ["success", "error"],
+   "blocks": {
+    "start": {
+     "type": "TPlay",
+     "message": "@message",
+     "next": "prompt_score"
+    },
+    "prompt_score": {
+     "type": "TMenu",
+     "message": "Use numbers 1 to 5 to provide score.",
+     "options": {
+      "1": "returnSuccess",
+      "2": "returnSuccess",
+      "3": "returnSuccess",
+     },
+     "timeout": "start",
+     "nomatch": "start",
+     "error": "returnError"
+    },
+    "returnSuccess": {
+     "type": "TReturn",
+     "to": "success"
+    },
+    "returnError": {
+     "type": "TReturn",
+     "to": "error"
+    }
+   }
+  }
+ ]
+}
+```
+The flow above is a simple example to give a survey to the user for them to rate the service - this may be something
+you wish all customers to complete after any call.  
+Take note of the `parameters` item - it is a list of variables passed in to the flow by the calling flow.  
+In the next step we will define the flow that makes use of the survey above.
+
+3. Create a new file named `simple_subflow_call.json`
+4. Add the following content:
+```json
+{
+  "flows": [
+    {
+      "id": "subflow_call",
+      "initial": "start",
+      "blocks": {
+        "start": {
+          "type": "TPlay",
+          "message": "Welcome to parent flow",
+          "next": "survey"
+        },
+        "survey": {
+          "type": "TCall",
+          "collection": "simple_survey",
+          "callError": "error",
+          "message": "This is subflow. Please rate your experience on this call",
+          "success": "finish",
+          "error": "error"
+        },
+        "finish": {
+          "type": "TPlay",
+          "message": "This is parent flow. Thank you for calling. Goodbye",
+          "next": "disconnect"
+        },
+        "error": {
+          "type": "TPlay",
+          "message": "Oh no. Unexpected error. Please call later",
+          "next": "disconnect"
+        },
+        "disconnect": {
+          "type": "TDisconnect"
+        }
+      }
+    }
+  ]
+}
+```
+The flow above is the referred to as the `parent`, as it makes use of the shared `subflow`.  
+The example above is very simple, it uses 
+[TPlay](https://github.com/in2cloud/dsl-doc/blob/master/documentation/tdslroot-definitions-tplay.md) blocks to play
+a message to the user, before invoking the survey with a custom message.  
+When the subflow is completed, it will play back another message then terminate the call.
+
+5. Deploy to AWS Connect via CLI
+
+Since this flow consists of two files, you will need to include both of them in the deployment command:  
+>in2cloud-cli deploy src/simple_subflow_call.json src/simple_survey.json --key [DEMO_API_KEY] --flow subflow_call --region ap-southeast-2 --instance XXXXX-1111-2222-3333-XXXXXXX
+
+6. Review your flow in AWS  
+   Log on to your AWS Connect instance. Navigate to contact flows, and find the new flow named `simple-menu`.  
+   Click on the flow and it will show you the design in the browser:  
+   ![Image of connect flow](https://photos.smugmug.com/photos/i-mSp8hnx/0/287b5e2b/X2/i-mSp8hnx-X2.png)
+   
+You can review the functions of each block and how it corresponds to your DSL code.
+
+7. Call your flow  
+   Once the example has successfully been deployed, call your instance to test the contact flow!
+
+
+### Tutorial 5: Lambda invocation (TODO add example flow)
 TODO
 
-### Tutorial 5: Reusing blocks with subflows
-TODO
-
-### Tutorial 6: Lambda invocation (TODO add example flow)
-TODO
-
-### Tutorial 7: Combining elements in a larger flow (TODO add example flow)
+### Tutorial 6: Combining elements in a larger flow (TODO add example flow)
 TODO
 
 
