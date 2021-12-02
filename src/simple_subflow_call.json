@@ -13,13 +13,13 @@
           "type": "TCall",
           "collection": "simple_survey",
           "callError": "error",
-          "message": "This is subflow. How much do you like in to cloud DSL?",
+          "message": "This is subflow. Please rate your experience on this call",
           "success": "finish",
           "error": "error"
         },
         "finish": {
           "type": "TPlay",
-          "message": "This is parent flow. Thank you. Bye-bye",
+          "message": "This is parent flow. Thank you for calling. Goodbye",
           "next": "disconnect"
         },
         "error": {
