@@ -45,6 +45,12 @@ For example:
 >in2cloud-cli deploy src/simple_greeting.json --key DEMO_API_KEY(see below) --flow simple_greeting --region ap-southeast-2 --instance XXXXX-1111-2222-3333-XXXXXXX
 The example above should successfully deploy `simple-greeting` flow in your AWS Connect instance
 
+### DEMO API KEY
+For testing purposes you can use this free API key: **XGRVeL3LHi2yhuu9eSLMY1NnfxKfiAEX7YMnxQgw**
+
+This key is for demo purposes only, and should not be used for production purposes,
+as it can be expired/disabled/revoked at any time without further notice
+
 ### Tutorial 1: Greeting the user
 In this example we are going to create a flow that will play a greeting to the user.  
 
